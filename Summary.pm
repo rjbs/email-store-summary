@@ -2,7 +2,7 @@ package Email::Store::Summary;
 use 5.006;
 use strict;
 use warnings;
-our $VERSION = '1.1';
+our $VERSION = '1.3';
 use base 'Email::Store::DBI';
 use Email::MIME;
 Email::Store::Summary->table("summary");
@@ -19,14 +19,7 @@ sub on_store {
     $subject =~ s/^(\s*(re|aw):\s*)+//i; 
 
     # There's a bit of hackery here.
-    my $body = $mail->simple->body;
-    my $charset = $mime->{ct}->{attributes}{charset};
-    if ($charset and $charset !~ /utf-?8/) {
-        eval {
-            require Encode;
-            $body = Encode::decode($charset, $body);
-        };  
-    }   
+    my $body = $mail->utf8_body;
 
     Email::Store::Summary->create({
         mail => $mail->id,
@@ -75,9 +68,19 @@ L<Email::Store::Mail>, L<Text::Original>.
 
 =head1 AUTHOR
 
-Simon Cozens, C<simon@cpan.org>
+The original author is Simon Cozens, E<lt>simon@cpan.orgE<gt>
+Currently maintained by Simon Wistow E<lt>simon@thegestalt.orgE<gt>
 
-This module is distributed under the same terms as Perl itself.
+=head1 SUPPORT
+
+This module is part of the Perl Email Project - http://pep.kwiki.org/
+
+There is a mailing list at pep@perl.org (subscribe at pep-subscribe@perl.org)
+and an archive available at http://nntp.perl.org/group/pep.php
+
+=head1 COPYRIGHT
+
+Copyright 2004, 2005 Simon Cozens
 
 =cut
 

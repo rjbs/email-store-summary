@@ -1,7 +1,9 @@
+# -*- cperl -*-
 use Test::More tests => 5;
 use File::Slurp;
 BEGIN { unlink("t/test.db"); }
-use Email::Store "dbi:SQLite:dbname=t/test.db";
+use Email::Store  { only => [qw( Mail Summary )] },
+  "dbi:SQLite:dbname=t/test.db";
 Email::Store->setup;
 ok(1, "Set up");
 
